@@ -17,7 +17,7 @@ main();
 
 async function main()
 {
-  const browser = await puppeteer.launch({headless: false});
+  const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.goto('http://www.biblioteca.ufpe.br/pergamum/biblioteca_s/php/login_usu.php?flag=index.php');
   await page.evaluate(js, cpf, password);
