@@ -39,8 +39,7 @@ function js(cpf, password)
 {  
   pergamum = window.open('http://www.biblioteca.ufpe.br/pergamum/biblioteca_s/php/login_usu.php?flag=index.php');
   date_raw = new Date();
-  //date = ("0"+date_raw.getDate().toString()).slice(-2) + "/" + ("0"+(date_raw.getMonth()+1).toString()).slice(-2) + "/" + date_raw.getFullYear().toString();
-  date = "16/03/2018"
+  date = ("0"+date_raw.getDate().toString()).slice(-2) + "/" + ("0"+(date_raw.getMonth()+1).toString()).slice(-2) + "/" + date_raw.getFullYear().toString();
   i = 0;
   timer = setInterval(waitLoaded, 500, pergamum, 'id_login', login);
   
