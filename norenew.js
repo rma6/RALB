@@ -39,9 +39,9 @@ function js(cpf, password)
 {  
   pergamum = window.open('http://www.biblioteca.ufpe.br/pergamum/biblioteca_s/php/login_usu.php?flag=index.php');
   date_raw = new Date();
-  var date = ("0"+date_raw.getDate().toString()).slice(-2) + "/" + ("0"+(date_raw.getMonth()+1).toString()).slice(-2) + "/" + date_raw.getFullYear().toString();
+  //date = ("0"+date_raw.getDate().toString()).slice(-2) + "/" + ("0"+(date_raw.getMonth()+1).toString()).slice(-2) + "/" + date_raw.getFullYear().toString();
+  date = "16/03/2018"
   i = 0;
-  renewN = 0;
   timer = setInterval(waitLoaded, 500, pergamum, 'id_login', login);
   
   
@@ -87,7 +87,6 @@ function js(cpf, password)
     {
       if(date===bDates[3*(i+1)].innerHTML)
       {
-        renewN++;
         buttons[i].click();
         i++;
         timer = setInterval(waitLoaded, 500, pergamum, 'btn_gravar4', renew_r);
@@ -98,7 +97,7 @@ function js(cpf, password)
         i++;
       }
     }
-    if(renewN==0)
+    if(i>=(bDates.length/3)-1)
     {
       pergamum.close();
     }
@@ -108,6 +107,6 @@ function js(cpf, password)
   {
     pergamum.document.getElementById('email').click();
     wait = setInterval(waitEmail, 500, pergamum);
-    timer = setInterval(waitLoaded, 500, pergamum, 'Accordion1', renew_s);
+    timer = setInterval(waitLoaded, 500, pergamum, 'Accordion1', renew_e);
   }
 }
