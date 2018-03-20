@@ -64,6 +64,7 @@ function js(cpf, password)
       }
       else
       {
+        i++;
         page.document.getElementById('btn_gravar4').click();
       }
     }
@@ -87,7 +88,6 @@ function js(cpf, password)
       if(date===bDates[3*(i+1)].innerHTML)
       {
         buttons[i].click();
-        i++;
         timer = setInterval(waitLoaded, 500, pergamum, 'btn_gravar4', renew_r);
         break;
       }
