@@ -76,7 +76,7 @@ function js(cpf, password)
       con.connect(function(err)
       {
         if (err) throw err;
-        con.query("INSERT INTO datalog VALUES("+'\''+Date()+'\''+" ERROR"+")", function (err, result, fields)
+        con.query("INSERT INTO datalog VALUES("+'\''+Date()+' ERROR\''+")", function (err, result, fields)
         {
           if (err) throw err;
         });
@@ -97,7 +97,7 @@ function js(cpf, password)
         con.connect(function(err)
         {
           if (err) throw err;
-          con.query("INSERT INTO datalog VALUES("+'\''+Date()+'\''+" OK"+")", function (err, result, fields)
+          con.query("INSERT INTO datalog VALUES("+'\''+Date()+' OK\''+")", function (err, result, fields)
           {
             if (err) throw err;
           });
