@@ -11,6 +11,16 @@ process.argv.forEach(function (val, index, array) {
   }
 });
 
+
+var mysql = require('mysql');
+
+var con = mysql.createConnection({
+  host: "localhost",
+  user: "web",
+  password: "",
+  database: "RALB" 
+});
+
 const puppeteer = require('puppeteer');
 
 main();
@@ -43,6 +53,7 @@ function js(cpf, password)
   date = ("0"+date_raw.getDate().toString()).slice(-2) + "/" + ("0"+(date_raw.getMonth()+1).toString()).slice(-2) + "/" + date_raw.getFullYear().toString();
   i = 0;
   timer = setInterval(waitLoaded, 500, pergamum, 'id_login', login);
+  timer2 = setInterval(waitLoginError, 500, pergamum);
   
   
   function waitLoaded(page, probe, func)
@@ -50,9 +61,31 @@ function js(cpf, password)
     if(page.document.getElementById(probe)!=null)
     {
       clearInterval(timer);
+      clearInterval(timer2);
       func();
     }
   }
+  
+  function waitLoginError(page)
+  {
+    if(document.getElementById('alert_login').innerHTML.includes('center'))
+    {
+      clearInterval(timer);
+      clearInterval(timer2);
+      
+      con.connect(function(err)
+      {
+        if (err) throw err;
+        con.query("INSERT INTO datalog VALUES("+'\''+Date()+'\''+" ERROR"+")", function (err, result, fields)
+        {
+          if (err) throw err;
+        });
+      });
+      
+      pergamum.close();
+    }
+  }
+  
   
   function waitEmail(page)
   {
@@ -61,6 +94,16 @@ function js(cpf, password)
       clearInterval(wait);
       if(i==(bDates.length/3)-1)
       {
+        con.connect(function(err)
+        {
+          if (err) throw err;
+          con.query("INSERT INTO datalog VALUES("+'\''+Date()+'\''+" OK"+")", function (err, result, fields)
+          {
+            if (err) throw err;
+          });
+        });
+        
+        
         pergamum.close();
       }
       else
