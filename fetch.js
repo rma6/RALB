@@ -1,10 +1,3 @@
-var dir='/home/rafaelmarinhoa/RALB';
-var access = fs.createWriteStream(dir + '/logfile.log', { flags: 'a' })
-, error = fs.createWriteStream(dir + '/errorlog.log', { flags: 'a' });
-
-proc.stdout.pipe(access);
-proc.stderr.pipe(error);
-
 var mysql = require('mysql');
 
 var con = mysql.createConnection({
