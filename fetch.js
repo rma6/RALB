@@ -17,7 +17,7 @@ con.connect(function(err)
     var i;
     for (i = 0; i < result.length; i++)
     {
-      execFileSync('node', ['norenew.js', result[i].CPF, result[i].Password]);
+      execFileSync('node', ['/home/rafaelmarinhoa/RALB/norenew.js', result[i].CPF, result[i].Password]);
     }
     con.query("INSERT INTO datalog VALUES("+'\''+Date()+'\''+")", function (err, result, fields)
     {
