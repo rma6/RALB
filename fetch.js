@@ -19,10 +19,10 @@ con.connect(function(err)
     {
       execFileSync('node', ['norenew.js', result[i].CPF, result[i].Password]);
     }
-    con.query("INSERT INTO datalog VALUES("+'\''+Date()+'\''+")"), function (err, result, fields)
+    con.query("INSERT INTO datalog VALUES("+'\''+Date()+'\''+")", function (err, result, fields)
     {
       if (err) throw err;
-    }
+    });
   });
 });
 process.exit();
