@@ -17,7 +17,7 @@ main();
 
 async function main()
 {
-  const browser = await puppeteer.launch({args: ['--no-sandbox']});
+  const browser = await puppeteer.launch({headless: false});
   const page = await browser.newPage();
   await page.goto('http://www.biblioteca.ufpe.br/pergamum/biblioteca_s/php/login_usu.php?flag=index.php');
   await page.evaluate(js, cpf, password);
@@ -43,22 +43,20 @@ function js(cpf, password)
   date = ("0"+date_raw.getDate().toString()).slice(-2) + "/" + ("0"+(date_raw.getMonth()+1).toString()).slice(-2) + "/" + date_raw.getFullYear().toString();
   i = 0;
   timer = setInterval(waitLoaded, 500, pergamum, 'id_login', login);
-  timer2 = setInterval(waitLoginError, 500, pergamum);
-  
+
   
   function waitLoaded(page, probe, func)
   {
     if(page.document.getElementById(probe)!=null)
     {
       clearInterval(timer);
-      clearInterval(timer2);
       func();
     }
   }
   
   function waitLoginError(page)
   {
-    if(document.getElementById('alert_login').innerHTML.includes('center'))
+    if(page.document.getElementById('alert_login')!=null && page.document.getElementById('alert_login').innerHTML.includes('center'))
     {
       clearInterval(timer);
       clearInterval(timer2);
@@ -92,6 +90,7 @@ function js(cpf, password)
     pergamum.document.getElementById('id_senhaLogin').value = password;
     pergamum.document.getElementById('button').click();
     timer = setInterval(waitLoaded, 500, pergamum, 'Accordion1', renew_e);
+    timer2 = setInterval(waitLoginError, 500, pergamum);
   }
   
   function renew_e()
