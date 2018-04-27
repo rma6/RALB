@@ -11,16 +11,6 @@ process.argv.forEach(function (val, index, array) {
   }
 });
 
-
-var mysql = require('mysql');
-
-var con = mysql.createConnection({
-  host: "localhost",
-  user: "web",
-  password: "",
-  database: "RALB" 
-});
-
 const puppeteer = require('puppeteer');
 
 main();
@@ -73,15 +63,6 @@ function js(cpf, password)
       clearInterval(timer);
       clearInterval(timer2);
       
-      con.connect(function(err)
-      {
-        if (err) throw err;
-        con.query("INSERT INTO datalog VALUES("+'\''+Date()+' ERROR\''+")", function (err, result, fields)
-        {
-          if (err) throw err;
-        });
-      });
-      
       pergamum.close();
     }
   }
@@ -94,16 +75,6 @@ function js(cpf, password)
       clearInterval(wait);
       if(i==(bDates.length/3)-1)
       {
-        con.connect(function(err)
-        {
-          if (err) throw err;
-          con.query("INSERT INTO datalog VALUES("+'\''+Date()+' OK\''+")", function (err, result, fields)
-          {
-            if (err) throw err;
-          });
-        });
-        
-        
         pergamum.close();
       }
       else
