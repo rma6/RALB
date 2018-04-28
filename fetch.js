@@ -6,6 +6,7 @@ var con = mysql.createConnection({
   password: "",
   database: "RALB"
 });
+console.log(Date());
 console.log('Attempting connection...');
 con.connect(function(err)
 {
