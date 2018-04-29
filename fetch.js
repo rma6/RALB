@@ -36,7 +36,7 @@ con.connect(function(err)
     {
       if (err) throw err;
     });
-    console.log('logging done');
+    console.log('logging done\n');
     process.exit(0);
   });
 });
