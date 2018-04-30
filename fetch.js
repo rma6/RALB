@@ -35,8 +35,8 @@ con.connect(function(err)
     con.query("INSERT INTO datalog VALUES("+'\''+Date()+' OK\''+")", function (err, result, fields)
     {
       if (err) throw err;
+      console.log('logging done\n');
+      process.exit(0);
     });
-    console.log('logging done\n');
-    process.exit(0);
   });
 });
