@@ -29,7 +29,7 @@ con.connect(function(err)
     {
       console.log('exec: '+result[i].CPF+' '+result[i].Password);
       execFile('node', ['/home/rafaelmarinhoa/RALB/norenew.js', result[i].CPF, result[i].Password]);
-      console.log('exec OK');
+      console.log('exec DONE');
     }
     console.log('logging...');
     con.query("INSERT INTO datalog VALUES("+'\''+Date()+' OK\''+")", function (err, result, fields)
