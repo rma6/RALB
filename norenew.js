@@ -13,113 +13,71 @@ process.argv.forEach(function (val, index, array) {
 
 const puppeteer = require('puppeteer');
 
-main();
+main().catch(e => {
+  console.error(e.message);
+  process.exit();
+});
 
 async function main()
 {
-  const browser = await puppeteer.launch({args: ['--no-sandbox']});
-  const page = await browser.newPage();
-  await page.goto('http://www.biblioteca.ufpe.br/pergamum/biblioteca_s/php/login_usu.php?flag=index.php');
-  await page.evaluate(js, cpf, password);
-  await page.waitFor(5000);
-  timer = await setInterval(waitEnd, 500, browser);
-}
-
-async function waitEnd(b)
-{
-  pages = await b.pages();
-  if(pages.length<=2)
-  {
-    clearInterval(timer);
-    b.close();
-    process.exit();
-  }
-}
-
-function js(cpf, password)
-{  
-  pergamum = window.open('http://www.biblioteca.ufpe.br/pergamum/biblioteca_s/php/login_usu.php?flag=index.php');
+  await console.log(cpf+' INIT');
   date_raw = new Date();
   date = ("0"+date_raw.getDate().toString()).slice(-2) + "/" + ("0"+(date_raw.getMonth()+1).toString()).slice(-2) + "/" + date_raw.getFullYear().toString();
-  i = 0;
-  timer = setInterval(waitLoaded, 500, pergamum, 'id_login', login);
 
-  
-  function waitLoaded(page, probe, func)
+  const browser = await puppeteer.launch({args: ['--no-sandbox']});//const browser = await puppeteer.launch({headless: false});
+  const page = await browser.newPage();
+
+  await page.goto('http://www.biblioteca.ufpe.br/pergamum/biblioteca_s/php/login_usu.php?flag=index.php');
+
+  //login
+  await console.log('attempting '+cpf+' login');
+  await page.type('#id_login', cpf);
+  await page.type('#id_senhaLogin', password);
+  await Promise.all([
+    page.waitForNavigation({ waitUntil: 'networkidle2' }),
+    page.click('#button'),
+  ]);
+  if(await page.$('#alert_login')) //login error
   {
-    if(page.document.getElementById(probe)!=null)
+    await browser.close();
+    await console.error(cpf+' login ERROR');
+    await process.exit();
+  }
+  await console.log(cpf+' login OK');
+
+  //renew
+  const bDates = await page.$$('.txt_cinza_10');
+  await console.log(cpf+' has '+(bDates.length/3-1)+' books');
+  var i;
+  for(i=0; i<(bDates.length/3)-1; i++)
+  {
+    await console.log('ckecking '+cpf+' book '+(i+1)+' date');
+    if(date===bDates[3*(i+1)].innerHTML)
     {
-      clearInterval(timer);
-      func();
+      await console.log('attempting '+cpf+' book '+(i+1)+' renew');
+      //renew book
+      await Promise.all([
+        page.waitForNavigation({ waitUntil: 'networkidle2' }),
+        page.click('#botao_renovar'+(i+1)),
+      ]);
+      await console.log(cpf+' book '+(i+1)+' renew OK');
+      await console.log('attempting '+cpf+' book '+(i+1)+' send email');
+      //send email
+      await page.click('#email');
+      const wse = page.waitForFunction('document.querySelector("#btn_gravar4").style.display != "none"');
+      await wse;
+      await console.log(cpf+' book '+(i+1)+' send email OK');
+      await console.log(cpf+' book '+(i+1)+' returning');
+      //return
+      await Promise.all([
+        page.waitForNavigation({ waitUntil: 'networkidle2' }),
+        page.click('#btn_gravar4'),
+      ]);
     }
   }
-  
-  function waitLoginError(page)
-  {
-    if(page.document.getElementById('alert_login')!=null && page.document.getElementById('alert_login').innerHTML.includes('center'))
-    {
-      clearInterval(timer);
-      clearInterval(timer2);
-      
-      pergamum.close();
-    }
-  }
-  
-  
-  function waitEmail(page)
-  {
-    if(page.document.getElementById('btn_gravar4')!=null)
-    {
-      clearInterval(wait);
-      if(i==(bDates.length/3)-1)
-      {
-        pergamum.close();
-      }
-      else
-      {
-        i++;
-        page.document.getElementById('btn_gravar4').click();
-      }
-    }
-  }
-  
-  
-  function login()
-  {
-    pergamum.document.getElementById('id_login').value = cpf;
-    pergamum.document.getElementById('id_senhaLogin').value = password;
-    pergamum.document.getElementById('button').click();
-    timer = setInterval(waitLoaded, 500, pergamum, 'Accordion1', renew_e);
-    timer2 = setInterval(waitLoginError, 500, pergamum);
-  }
-  
-  function renew_e()
-  {
-    bDates = pergamum.document.getElementsByClassName("txt_cinza_10");
-    buttons = pergamum.document.getElementsByClassName("btn_renovar");
-    while(i<(bDates.length/3)-1)
-    {
-      if(date===bDates[3*(i+1)].innerHTML)
-      {
-        buttons[i].click();
-        timer = setInterval(waitLoaded, 500, pergamum, 'btn_gravar4', renew_r);
-        break;
-      }
-      else
-      {
-        i++;
-      }
-    }
-    if(i>=(bDates.length/3)-1)
-    {
-      pergamum.close();
-    }
-  }
-  
-  function renew_r()
-  {
-    pergamum.document.getElementById('email').click();
-    wait = setInterval(waitEmail, 500, pergamum);
-    timer = setInterval(waitLoaded, 500, pergamum, 'Accordion1', renew_e);
-  }
+
+  await console.log(cpf+' done OK');
+  //close
+  await browser.close();
+  await process.exit();
 }
