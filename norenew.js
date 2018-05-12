@@ -33,11 +33,10 @@ async function main()
   await console.error('attempting '+cpf+' login');
   await page.type('#id_login', cpf);
   await page.type('#id_senhaLogin', password);
-  await Promise.all([
-    page.waitForNavigation({ waitUntil: 'networkidle2' }),
-    page.click('#button'),
-  ]);
-  if(await page.$('#alert_login')) //login error
+  await page.click('#button');
+  await page.waitForNavigation({ waitUntil: 'networkidle2' });
+    
+  if(await page.$('#alert_login') !=null) //login error
   {
     await browser.close();
     await console.error(cpf+' login ERROR');
@@ -56,10 +55,9 @@ async function main()
     {
       await console.error('attempting '+cpf+' book '+(i+1)+' renew');
       //renew book
-      await Promise.all([
-        page.waitForNavigation({ waitUntil: 'networkidle2' }),
-        page.click('#botao_renovar'+(i+1)),
-      ]);
+      await page.click('#botao_renovar'+(i+1));
+      await page.waitForNavigation({ waitUntil: 'networkidle2' });      
+
       await console.error(cpf+' book '+(i+1)+' renew OK');
       await console.error('attempting '+cpf+' book '+(i+1)+' send email');
       //send email
@@ -69,10 +67,8 @@ async function main()
       await console.error(cpf+' book '+(i+1)+' send email OK');
       await console.error(cpf+' book '+(i+1)+' returning');
       //return
-      await Promise.all([
-        page.waitForNavigation({ waitUntil: 'networkidle2' }),
-        page.click('#btn_gravar4'),
-      ]);
+      await page.click('#btn_gravar4');
+      await page.waitForNavigation({ waitUntil: 'networkidle2' });      
     }
   }
 
