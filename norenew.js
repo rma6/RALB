@@ -20,7 +20,7 @@ main().catch(e => {
 
 async function main()
 {
-  await console.error(cpf+' INIT');
+  await console.log(cpf+' INIT');
   date_raw = new Date();
   date = ("0"+date_raw.getDate().toString()).slice(-2) + "/" + ("0"+(date_raw.getMonth()+1).toString()).slice(-2) + "/" + date_raw.getFullYear().toString();
 
@@ -30,7 +30,7 @@ async function main()
   await page.goto('http://www.biblioteca.ufpe.br/pergamum/biblioteca_s/php/login_usu.php?flag=index.php');
 
   //login
-  await console.error('attempting '+cpf+' login');
+  await console.log('attempting '+cpf+' login');
   await page.type('#id_login', cpf);
   await page.type('#id_senhaLogin', password);
   await page.click('#button');
@@ -42,11 +42,11 @@ async function main()
     await console.error(cpf+' login ERROR');
     await process.exit();
   }
-  await console.error(cpf+' login OK');
+  await console.log(cpf+' login OK');
 
   //renew
   const bDates = await page.$$('.txt_cinza_10');
-  await console.error(cpf+' has '+(bDates.length/3-1)+' books');
+  await console.log(cpf+' has '+(bDates.length/3-1)+' books');
   var i;
   for(i=0; i<(bDates.length/3)-1; i++)
   {
