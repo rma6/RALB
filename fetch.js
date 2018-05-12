@@ -23,20 +23,11 @@ con.connect(function(err)
   {
     if (err) throw err;
     console.log('query OK');
-    const { execFile } = require('child_process');//Sync
+    const { execFileSync } = require('child_process');//Sync
     var i;
     for (i = 0; i < result.length; i++)
     {
-      console.log('exec: '+result[i].CPF+' '+result[i].Password);
-      execFile('node', ['/home/rafaelmarinhoa/RALB/norenew.js', result[i].CPF, result[i].Password]);
-      console.log('exec DONE');
+      execFileSync('node', ['/home/rafaelmarinhoa/RALB/norenew.js', result[i].CPF, result[i].Password]);
     }
-    console.log('logging...');
-    con.query("INSERT INTO datalog VALUES("+'\''+Date()+' OK\''+")", function (err, result, fields)
-    {
-      if (err) throw err;
-      console.log('logging done\n');
-      process.exit(0);
-    });
   });
 });
