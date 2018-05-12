@@ -20,7 +20,7 @@ main().catch(e => {
 
 async function main()
 {
-  await console.log(cpf+' INIT');
+  await console.error(cpf+' INIT');
   date_raw = new Date();
   date = ("0"+date_raw.getDate().toString()).slice(-2) + "/" + ("0"+(date_raw.getMonth()+1).toString()).slice(-2) + "/" + date_raw.getFullYear().toString();
 
@@ -30,7 +30,7 @@ async function main()
   await page.goto('http://www.biblioteca.ufpe.br/pergamum/biblioteca_s/php/login_usu.php?flag=index.php');
 
   //login
-  await console.log('attempting '+cpf+' login');
+  await console.error('attempting '+cpf+' login');
   await page.type('#id_login', cpf);
   await page.type('#id_senhaLogin', password);
   await Promise.all([
@@ -43,31 +43,31 @@ async function main()
     await console.error(cpf+' login ERROR');
     await process.exit();
   }
-  await console.log(cpf+' login OK');
+  await console.error(cpf+' login OK');
 
   //renew
   const bDates = await page.$$('.txt_cinza_10');
-  await console.log(cpf+' has '+(bDates.length/3-1)+' books');
+  await console.error(cpf+' has '+(bDates.length/3-1)+' books');
   var i;
   for(i=0; i<(bDates.length/3)-1; i++)
   {
-    await console.log('ckecking '+cpf+' book '+(i+1)+' date');
+    await console.error('ckecking '+cpf+' book '+(i+1)+' date');
     if(date===bDates[3*(i+1)].innerHTML)
     {
-      await console.log('attempting '+cpf+' book '+(i+1)+' renew');
+      await console.error('attempting '+cpf+' book '+(i+1)+' renew');
       //renew book
       await Promise.all([
         page.waitForNavigation({ waitUntil: 'networkidle2' }),
         page.click('#botao_renovar'+(i+1)),
       ]);
-      await console.log(cpf+' book '+(i+1)+' renew OK');
-      await console.log('attempting '+cpf+' book '+(i+1)+' send email');
+      await console.error(cpf+' book '+(i+1)+' renew OK');
+      await console.error('attempting '+cpf+' book '+(i+1)+' send email');
       //send email
       await page.click('#email');
       const wse = page.waitForFunction('document.querySelector("#btn_gravar4").style.display != "none"');
       await wse;
-      await console.log(cpf+' book '+(i+1)+' send email OK');
-      await console.log(cpf+' book '+(i+1)+' returning');
+      await console.error(cpf+' book '+(i+1)+' send email OK');
+      await console.error(cpf+' book '+(i+1)+' returning');
       //return
       await Promise.all([
         page.waitForNavigation({ waitUntil: 'networkidle2' }),
@@ -76,7 +76,7 @@ async function main()
     }
   }
 
-  await console.log(cpf+' done OK');
+  await console.error(cpf+' done OK');
   //close
   await browser.close();
   await process.exit();
