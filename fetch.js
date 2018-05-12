@@ -12,12 +12,6 @@ con.connect(function(err)
 {
   if (err) throw err;
   console.log('Connection estalished.');
-  console.log('INIT logging');
-  con.query("INSERT INTO datalog VALUES("+'\''+Date()+' INIT\''+")", function (err, result, fields)
-  {
-    if (err) throw err;
-  });
-  console.log('INIT log OK');
   console.log('query: SELECT * FROM Users');
   con.query("SELECT * FROM Users", function (err, result, fields)
   {
