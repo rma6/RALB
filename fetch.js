@@ -20,7 +20,7 @@ async function enqueue(result)
   if(result.length==joins)
   {
     clearInterval(timer);
-    console.log('fetch done');
+    console.log('fetch done\n');
     process.exit();
   }
 }
