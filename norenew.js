@@ -14,7 +14,7 @@ process.argv.forEach(function (val, index, array) {
 const puppeteer = require('puppeteer');
 
 main().catch(e => {
-  console.error(e.message);
+  console.log(e.message);
   process.exit();
 });
 
@@ -35,44 +35,47 @@ async function main()
   await page.type('#id_senhaLogin', password);
   await page.click('#button');
   await page.waitForNavigation({ waitUntil: 'networkidle2' });
-    
+  
   if(await page.$('#alert_login') !=null) //login error
   {
     await browser.close();
-    await console.error(cpf+' login ERROR');
+    await console.log(cpf+' login ERROR');
     await process.exit();
   }
   await console.log(cpf+' login OK');
 
   //renew
-  const bDates = await page.$$('.txt_cinza_10');
+  const bDates = await page.evaluate(() => {
+        const dates = Array.from(document.querySelectorAll('.txt_cinza_10'))
+        return dates.map(td => td.innerHTML)
+  });
   await console.log(cpf+' has '+(bDates.length/3-1)+' books');
   var i;
   for(i=0; i<(bDates.length/3)-1; i++)
   {
-    await console.error('ckecking '+cpf+' book '+(i+1)+' date');
-    if(date===bDates[3*(i+1)].innerHTML)
+    await console.log('ckecking '+cpf+' book '+(i+1)+' date '+bDates[3*(i+1)]);
+    if(date===bDates[3*(i+1)])
     {
-      await console.error('attempting '+cpf+' book '+(i+1)+' renew');
+      await console.log('attempting '+cpf+' book '+(i+1)+' renew');
       //renew book
       await page.click('#botao_renovar'+(i+1));
-      await page.waitForNavigation({ waitUntil: 'networkidle2' });      
+      await page.waitForNavigation({ waitUntil: 'networkidle2' });
 
-      await console.error(cpf+' book '+(i+1)+' renew OK');
-      await console.error('attempting '+cpf+' book '+(i+1)+' send email');
+      await console.log(cpf+' book '+(i+1)+' renew OK');
+      await console.log('attempting '+cpf+' book '+(i+1)+' send email');
       //send email
       await page.click('#email');
       const wse = page.waitForFunction('document.querySelector("#btn_gravar4").style.display != "none"');
       await wse;
-      await console.error(cpf+' book '+(i+1)+' send email OK');
-      await console.error(cpf+' book '+(i+1)+' returning');
+      await console.log(cpf+' book '+(i+1)+' send email OK');
+      await console.log(cpf+' book '+(i+1)+' returning');
       //return
       await page.click('#btn_gravar4');
-      await page.waitForNavigation({ waitUntil: 'networkidle2' });      
+      await page.waitForNavigation({ waitUntil: 'networkidle2' });
     }
   }
 
-  await console.error(cpf+' done OK');
+  await console.log(cpf+' done OK');
   //close
   await browser.close();
   await process.exit();
