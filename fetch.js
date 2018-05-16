@@ -1,20 +1,28 @@
 lock=0;
+it=0;
+joins=0;
 
 async function enqueue(result)
 {
-  if(lock==0)
+  if(lock<=1 && it<result.length)
   {
-    lock=1;
-    console.log('calling norenew for '+result[joins].CPF);
-    const child = spawn('node', ['/home/rafaelmarinhoa/RALB/norenew.js', result[joins].CPF, result[joins].Password]);
+    lock++;
+    console.log('calling norenew for '+result[it].CPF);
+    const child = spawn('node', ['/home/rafaelmarinhoa/RALB/norenew.js', result[it].CPF, result[it].Password]);
+    it++;
     child.stdout.on('data', (data) => {
+      var msg = data.toString();
+      msg=msg.substring(0, msg.length-1);
+      console.log(msg);
+    });
+    child.stderr.on('data', (data) => {
       var msg = data.toString();
       msg=msg.substring(0, msg.length-1);
       console.log(msg);
     });
     child.on('exit', function (code) {
       joins++;
-      lock=0;
+      lock--;
     });
   }
   if(result.length==joins)
@@ -28,12 +36,10 @@ async function enqueue(result)
 var mysql = require('mysql');
 var { spawn } = require('child_process');
 
-joins=0;
-
 var con = mysql.createConnection({
   host: "localhost",
   user: "web",
-  password: "qsXvEsmoT9TcVRpmBw5WZ6vIJmEZoF0j",
+  password: "",
   database: "RALB"
 });
 console.log(Date());
