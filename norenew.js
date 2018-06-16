@@ -26,8 +26,20 @@ async function main()
 
   const browser = await puppeteer.launch({args: ['--no-sandbox']});//const browser = await puppeteer.launch({headless: false});
   const page = await browser.newPage();
-
-  await page.goto('http://www.biblioteca.ufpe.br/pergamum/biblioteca_s/php/login_usu.php?flag=index.php');
+  
+  //testar se isso roda 3 vezes
+  try
+    await page.goto('http://www.biblioteca.ufpe.br/pergamum/biblioteca_s/php/login_usu.php?flag=index.php');
+  catch (error) {
+  console.log(error);
+  try
+    await page.goto('http://www.biblioteca.ufpe.br/pergamum/biblioteca_s/php/login_usu.php?flag=index.php');
+    catch (error) {
+    console.log(error);
+    try
+      await page.goto('http://www.biblioteca.ufpe.br/pergamum/biblioteca_s/php/login_usu.php?flag=index.php');
+    }
+  }
 
   //login
   await console.log('attempting '+cpf+' login');
